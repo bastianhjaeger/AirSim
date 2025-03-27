@@ -1,6 +1,6 @@
 #include <airsim_ros_wrapper.h>
 #include "common/AirSimSettings.hpp"
-#include <tf2_sensor_msgs/tf2_sensor_msgs.h>
+// #include <tf2_sensor_msgs/tf2_sensor_msgs.h>
 
 using namespace std::placeholders;
 
@@ -73,10 +73,10 @@ void AirsimROSWrapper::initialize_airsim()
         airsim_client_images_.confirmConnection();
         airsim_client_lidar_.confirmConnection();
 
-        for (const auto& vehicle_name_ptr_pair : vehicle_name_ptr_map_) {
-            airsim_client_->enableApiControl(true, vehicle_name_ptr_pair.first); // todo expose as rosservice?
-            airsim_client_->armDisarm(true, vehicle_name_ptr_pair.first); // todo exposes as rosservice?
-        }
+        // for (const auto& vehicle_name_ptr_pair : vehicle_name_ptr_map_) {
+        //     airsim_client_->enableApiControl(true, vehicle_name_ptr_pair.first); // todo expose as rosservice?
+        //     airsim_client_->armDisarm(true, vehicle_name_ptr_pair.first); // todo exposes as rosservice?
+        // }
 
         origin_geo_point_ = get_origin_geo_point();
         // todo there's only one global origin geopoint for environment. but airsim API accept a parameter vehicle_name? inside carsimpawnapi.cpp, there's a geopoint being assigned in the constructor. by?
@@ -550,12 +550,12 @@ void AirsimROSWrapper::gimbal_angle_quat_cmd_cb(const airsim_interfaces::msg::Gi
 {
     tf2::Quaternion quat_control_cmd;
     try {
-        tf2::convert(gimbal_angle_quat_cmd_msg->orientation, quat_control_cmd);
-        quat_control_cmd.normalize();
-        gimbal_cmd_.target_quat = get_airlib_quat(quat_control_cmd); // airsim uses wxyz
-        gimbal_cmd_.camera_name = gimbal_angle_quat_cmd_msg->camera_name;
-        gimbal_cmd_.vehicle_name = gimbal_angle_quat_cmd_msg->vehicle_name;
-        has_gimbal_cmd_ = true;
+        // tf2::convert(gimbal_angle_quat_cmd_msg->orientation, quat_control_cmd);
+        // quat_control_cmd.normalize();
+        // gimbal_cmd_.target_quat = get_airlib_quat(quat_control_cmd); // airsim uses wxyz
+        // gimbal_cmd_.camera_name = gimbal_angle_quat_cmd_msg->camera_name;
+        // gimbal_cmd_.vehicle_name = gimbal_angle_quat_cmd_msg->vehicle_name;
+        // has_gimbal_cmd_ = true;
     }
     catch (tf2::TransformException& ex) {
         RCLCPP_WARN(nh_->get_logger(), "%s", ex.what());
@@ -683,7 +683,7 @@ sensor_msgs::msg::PointCloud2 AirsimROSWrapper::get_lidar_msg_from_airsim(const 
             try {
                 sensor_msgs::msg::PointCloud2 lidar_msg_enu;
                 auto transformStampedENU = tf_buffer_->lookupTransform(AIRSIM_FRAME_ID, vehicle_name, rclcpp::Time(0), rclcpp::Duration::from_nanoseconds(1));
-                tf2::doTransform(lidar_msg, lidar_msg_enu, transformStampedENU);
+                // tf2::doTransform(lidar_msg, lidar_msg_enu, transformStampedENU);
 
                 lidar_msg_enu.header.stamp = lidar_msg.header.stamp;
                 lidar_msg_enu.header.frame_id = lidar_msg.header.frame_id;
@@ -1226,7 +1226,10 @@ void AirsimROSWrapper::img_response_timer_cb()
             const std::vector<ImageResponse>& img_response = airsim_client_images_.simGetImages(airsim_img_request_vehicle_name_pair.first, airsim_img_request_vehicle_name_pair.second);
 
             if (img_response.size() == airsim_img_request_vehicle_name_pair.first.size()) {
-                process_and_publish_img_response(img_response, image_response_idx, airsim_img_request_vehicle_name_pair.second);
+
+                std::thread([this, img_response, image_response_idx, airsim_img_request_vehicle_name_pair]() {
+                    process_and_publish_img_response(img_response, image_response_idx, airsim_img_request_vehicle_name_pair.second);
+                }).detach();
                 image_response_idx += img_response.size();
             }
         }

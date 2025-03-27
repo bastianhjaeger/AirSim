@@ -25,7 +25,7 @@ def generate_launch_description():
 
     host = DeclareLaunchArgument(
         "host",
-        default_value='localhost')
+        default_value='10.41.200.1')
   
     airsim_node = Node(
             package='airsim_ros_pkgs',
@@ -34,7 +34,7 @@ def generate_launch_description():
             output='screen',
             parameters=[{
                 'is_vulkan': False,
-                'update_airsim_img_response_every_n_sec': 0.05,
+                'update_airsim_img_response_every_n_sec': 0.02,
                 'update_airsim_control_every_n_sec': 0.01,
                 'update_lidar_every_n_sec': 0.01,
                 'publish_clock': LaunchConfiguration('publish_clock'),

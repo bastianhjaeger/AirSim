@@ -37,7 +37,7 @@ STRICT_MODE_OFF //todo what does this do?
 #include <iostream>
 #include <math.h>
 #include <math_common.h>
-#include <mavros_msgs/msg/state.hpp>
+// #include <mavros_msgs/msg/state.hpp>
 #include <nav_msgs/msg/odometry.hpp>
 #include <opencv2/opencv.hpp>
 #include <sensor_msgs/msg/camera_info.hpp>
@@ -51,10 +51,10 @@ STRICT_MODE_OFF //todo what does this do?
 #include <sensor_msgs/msg/point_cloud2.hpp>
 #include <sensor_msgs/msg/range.hpp>
 #include <rosgraph_msgs/msg/clock.hpp>
-#include <std_srvs/srv/empty.hpp>
-#include <tf2/LinearMath/Matrix3x3.h>
-#include <tf2/LinearMath/Quaternion.h>
-#include <tf2_geometry_msgs/tf2_geometry_msgs.h>
+// #include <std_srvs/srv/empty.hpp>
+// #include <tf2/LinearMath/Matrix3x3.h>
+// #include <tf2/LinearMath/Quaternion.h>
+// #include <tf2_geometry_msgs/tf2_geometry_msgs.h>
 #include <tf2_ros/buffer.h>
 #include <tf2_ros/static_transform_broadcaster.h>
 #include <tf2_ros/transform_broadcaster.h>
